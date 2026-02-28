@@ -167,6 +167,22 @@ class ConfigLoader:
     
     def load_config(self) -> AppConfig:
         """Load configuration file"""
+        # 1. 优先从环境变量读取 Base64 配置
+        import os
+        config_b64 = os.environ.get("TOOLIFY_CONFIG_B64")
+        if config_b64:
+            try:
+                import base64
+                import yaml
+                config_yaml = base64.b64decode(config_b64).decode('utf-8')
+                config_data = yaml.safe_load(config_yaml)
+                from config_loader import AppConfig
+                self._config = AppConfig(**config_data)
+                return self._config
+            except Exception as e:
+                print(f"Error decoding config from env: {e}")
+        
+        # 2. 从本地文件加载
         if not os.path.exists(self.config_path):
             raise FileNotFoundError(
                 f"Configuration file '{self.config_path}' not found. "
@@ -185,11 +201,11 @@ class ConfigLoader:
             raise ValueError("Configuration file is empty")
         
         try:
+            from config_loader import AppConfig
             self._config = AppConfig(**config_data)
             return self._config
         except Exception as e:
             raise ValueError(f"Configuration validation failed: {e}")
-    
     @property
     def config(self) -> AppConfig:
         """Get configuration object"""

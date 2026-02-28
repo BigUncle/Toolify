@@ -1,0 +1,12 @@
+{
+  "name": "toolify-vercel-bridge",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Node bridge for Vercel streaming proxy",
+  "main": "node-api/stream.js",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "express": "^4.21.2"
+  }
+}
